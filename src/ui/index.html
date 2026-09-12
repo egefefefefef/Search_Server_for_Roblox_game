@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job ID Builder</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --panel-color: #1e1e1e;
+            --accent-color: #007bff;
+            --text-color: #e0e0e0;
+            --border-color: #333;
+            --highlight: #2a2a2a;
+        }
+        body.light-theme {
+            --bg-color: #f0f2f5;
+            --panel-color: #ffffff;
+            --accent-color: #0056b3;
+            --text-color: #1c1e21;
+            --border-color: #ddd;
+            --highlight: #f5f6f7;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+        .sidebar {
+            width: 300px;
+            background-color: var(--panel-color);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+        .main-content {
+            flex: 1;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        input, select {
+            background: var(--highlight);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+        }
+        input:focus { border-color: var(--accent-color); }
+        
+        button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+        button:disabled { background: #555; cursor: not-allowed; }
+        
+        .server-table-container {
+            flex: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--panel-color);
+            min-height: 300px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            background: var(--highlight);
+            position: sticky;
+            top: 0;
+            font-weight: 600;
+        }
+        tr:hover { background: var(--highlight); cursor: pointer; }
+        
+        .status-bar {
+            padding: 10px 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            font-size: 0.9em;
+            border-left: 4px solid #555;
+        }
+        .error { border-left-color: #ff4d4d; color: #ff8080; }
+        .success { border-left-color: #4dff88; color: #80ff80; }
+        
+        .link-box {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            word-break: break-all;
+            font-family: 'Consolas', monospace;
+            border: 1px solid var(--accent-color);
+            margin-bottom: 10px;
+            display: none;
+        }
+        .light-theme .link-box {
+            background: #f8f9fa;
+            color: #0056b3;
+            border: 1px solid var(--accent-color);
+        }
+        
+        .trending-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .game-card {
+            background: var(--panel-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .game-card:hover {
+            transform: scale(1.05);
+            border-color: var(--accent-color);
+        }
+        .game-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            object-fit: cover;
+        }
+        .game-card div {
+            font-size: 0.85em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Modal Settings */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal {
+            background: var(--panel-color);
+            color: var(--text-color);
+            padding: 30px;
+            border-radius: 12px;
+            width: 400px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .settings-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .lang-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .lang-btn {
+            padding: 8px;
+            font-size: 0.8em;
+            background: var(--highlight);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .lang-btn.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+        .theme-btn {
+            padding: 10px;
+            background: var(--highlight);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            border-radius: 6px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .theme-btn.active {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px var(--accent-color);
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="sidebar">
+        <button id="openSettingsBtn">⚙️ Settings</button>
+        
+        <hr style="width:100%; border: 0.5px solid var(--border-color)">
+        
+        <div class="input-group">
+            <label id="txt-limit">Server Limit:</label>
+            <select id="limitSelect">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50" selected>50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label id="txt-pingFilter">Max Ping:</label>
+            <input type="number" id="pingFilter" value="500">
+        </div>
+        <div class="input-group">
+            <label id="txt-playerFilter">Min Players:</label>
+            <input type="number" id="playerFilter" value="0">
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="input-group" style="flex-direction: row; align-items: flex-end; gap: 15px;">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 8px;">
+                <label id="txt-gameInput">Game link or PlaceId:</label>
+                <input type="text" id="gameInput" placeholder="https://www.roblox.com/games/...">
+            </div>
+            <button id="fetchBtn">Find Servers 🔍</button>
+        </div>
+
+        <div id="resultDisplay" style="display: none;">
+            <div class="link-box" id="finalLink"></div>
+            <button id="copyBtn" style="width: 150px;">Copy 📋</button>
+        </div>
+
+        <div class="server-table-container">
+            <table id="serverTable">
+                <thead>
+                    <tr>
+                        <th id="th-ping">Ping (ms)</th>
+                        <th id="th-players">Players</th>
+                        <th id="th-jobid">Job ID</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="statusBar" class="status-bar">Ready</div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="txt-settingsTitle">Settings</h2>
+                <button id="closeSettingsBtn" style="background:none; color:var(--text-color); font-size:20px; padding:0;">✕</button>
+            </div>
+            
+            <div class="settings-group">
+                <h3 id="txt-langTitle">Select Language</h3>
+                <div class="lang-grid">
+                    <button class="lang-btn active" data-lang="ru">RU</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="uk">UA</button>
+                    <button class="lang-btn" data-lang="zh">CN</button>
+                    <button class="lang-btn" data-lang="ja">JP</button>
+                    <button class="lang-btn" data-lang="ko">KR</button>
+                    <button class="lang-btn" data-lang="it">IT</button>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h3 id="txt-themeTitle">Theme</h3>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button class="theme-btn" id="themeDarkBtn">🌙 <span id="txt-themeDark">Dark Theme</span></button>
+                    <button class="theme-btn" id="themeLightBtn">☀️ <span id="txt-themeLight">Light Theme</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
