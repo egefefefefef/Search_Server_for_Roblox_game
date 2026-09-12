@@ -70,7 +70,7 @@ npm start
 
 ## 📜 Лицензия и Авторство
 
-- **Оригинальный автор**: [Proopasn](https://github.com/proopasip/Job_Id_Builder)
+- **Оригинальный автор**: [Proopasip](https://github.com/proopasip)
 - **Разработка форка**: [egefefefefef](https://github.com/egefefefefef)
 
 Все права на оригинальную концепцию принадлежат автору исходного репозитория.
