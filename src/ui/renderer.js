@@ -27,7 +27,7 @@ const locales = {
     },
     "ru": {
         "settings": "Настройки",
-        "limit": "Лимит серверов",
+        "limit": "Просканировать серверов",
         "pingFilter": "Макс. пинг",
         "playerFilter": "Мин. игроков",
         "gameInput": "Ссылка на игру или PlaceId",
