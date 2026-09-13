@@ -1,7 +1,7 @@
 {
   "en": {
     "settings": "Settings",
-    "limit": "Server Limit",
+    "limit": "Scan Servers",
     "pingFilter": "Max Ping",
     "playerFilter": "Min Players",
     "gameInput": "Game link or PlaceId",
@@ -55,7 +55,7 @@
   },
   "uk": {
     "settings": "Налаштування",
-    "limit": "Ліміт серверів",
+    "limit": "Просканувати сервери",
     "pingFilter": "Макс. пінг",
     "playerFilter": "Мін. гравців",
     "gameInput": "Посилання на гру або PlaceId",
@@ -82,7 +82,7 @@
   },
   "zh": {
     "settings": "设置",
-    "limit": "服务器限制",
+    "limit": "扫描服务器",
     "pingFilter": "最大延迟",
     "playerFilter": "最小人数",
     "gameInput": "游戏链接或 PlaceId",
@@ -109,7 +109,7 @@
   },
   "ja": {
     "settings": "設定",
-    "limit": "サーバー制限",
+    "limit": "サーバーをスキャン",
     "pingFilter": "最大Ping",
     "playerFilter": "最小プレイヤー数",
     "gameInput": "ゲームリンクまたはPlaceId",
@@ -136,7 +136,7 @@
   },
   "ko": {
     "settings": "설정",
-    "limit": "서버 제한",
+    "limit": "서버 스캔",
     "pingFilter": "최대 핑",
     "playerFilter": "최소 플레이어",
     "gameInput": "게임 링크 또는 PlaceId",
@@ -163,7 +163,7 @@
   },
   "it": {
     "settings": "Impostazioni",
-    "limit": "Limite Server",
+    "limit": "Scansiona Server",
     "pingFilter": "Ping Massimo",
     "playerFilter": "Giocatori Minimi",
     "gameInput": "Link del gioco o PlaceId",
